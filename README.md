@@ -21,6 +21,7 @@ To build and run the docker image, execute the following commands from the root 
 #
 # Building the Docker image requires at least 4GB RAM. This needs to be set 
 # explicitly in case of Windows and MacOS.
+
 docker build -t grapharo .
 
 # Create and run a container.
