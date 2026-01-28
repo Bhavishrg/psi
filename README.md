@@ -14,7 +14,7 @@ The following libraries need to be installed separately and should be available 
 
 ### Docker
 All required dependencies to compile and run the project are available through the docker image.
-To build and run the docker image, execute the following commands from the root directory of the repository:
+To build and run the docker image, execute the following commands from the root directory of the repository: 
 
 ```sh
 # Build the grapharo Docker image.
