@@ -9,16 +9,11 @@
 if [ $# -lt 1 ]; then
     echo "Usage: $0 <benchmark_name> [benchmark_options...]"
     echo ""
-    echo "Available benchmarks:"
-    echo "  - mult"
-    echo "  - add"
-    echo "  - equality"
-    echo "  - reconstruction"
-    echo "  - shuffle"
-    echo "  - compaction"
-    echo "  - cpact"
-    echo "  - groupindex"
-    echo "  - grouppropagate"
+    echo "Available benchmarks (./benchmarks/):"
+    ls -1 ./benchmarks/ 2>/dev/null | sed 's/^/  - /' || echo "  (directory not found)"
+    echo ""
+    echo "Available test primitives (./test_primitives/):"
+    ls -1 ./test_primitives/ 2>/dev/null | sed 's/^/  - /' || echo "  (directory not found)"
     echo ""
     echo "Example: $0 grouppropagate -l 0.5 --t1-size 8 --t2-size 10"
     echo "Example: $0 reconstruction -l 0.5 -i 10 --use-pking true"
@@ -29,12 +24,24 @@ fi
 BENCHMARK_NAME="$1"
 shift  # Remove first argument, leaving only the options
 
-# Validate benchmark exists
-BENCHMARK_PATH="./benchmarks/$BENCHMARK_NAME"
-if [ ! -f "$BENCHMARK_PATH" ]; then
-    echo "Error: Benchmark '$BENCHMARK_NAME' not found at $BENCHMARK_PATH"
+# Validate benchmark exists - check both benchmarks and test_primitives directories
+BENCHMARK_PATH=""
+if [ -f "./benchmarks/$BENCHMARK_NAME" ]; then
+    BENCHMARK_PATH="./benchmarks/$BENCHMARK_NAME"
+    BENCHMARK_TYPE="benchmarks"
+elif [ -f "./test_primitives/$BENCHMARK_NAME" ]; then
+    BENCHMARK_PATH="./test_primitives/$BENCHMARK_NAME"
+    BENCHMARK_TYPE="test_primitives"
+fi
+
+if [ -z "$BENCHMARK_PATH" ]; then
+    echo "Error: Benchmark '$BENCHMARK_NAME' not found in ./benchmarks/ or ./test_primitives/"
+    echo ""
     echo "Available benchmarks in ./benchmarks/:"
-    ls -1 ./benchmarks/ 2>/dev/null || echo "  (directory not found)"
+    ls -1 ./benchmarks/ 2>/dev/null | sed 's/^/  - /' || echo "  (directory not found)"
+    echo ""
+    echo "Available test primitives in ./test_primitives/:"
+    ls -1 ./test_primitives/ 2>/dev/null | sed 's/^/  - /' || echo "  (directory not found)"
     exit 1
 fi
 
@@ -81,13 +88,13 @@ if [[ ! " ${BENCHMARK_OPTS[*]} " =~ " -n " ]] && [[ ! " ${BENCHMARK_OPTS[*]} " =
     BENCHMARK_OPTS+=("-n" "$players")
 fi
 
-# Create results directory structure: Results/<benchmark_name>/<num_verts>/<num_edges>/<num_clients>
-dir=$PWD/../Results/$BENCHMARK_NAME/$num_verts/$num_edges/$num_clients
+# Create results directory structure: Results/<benchmark_type>/<benchmark_name>/<num_verts>/<num_edges>/<num_clients>
+dir=$PWD/../Results/$BENCHMARK_TYPE/$BENCHMARK_NAME/$num_verts/$num_edges/$num_clients
 
 # Clean up old results for this benchmark and party configuration
 # rm -rf $dir
 
-echo "Running benchmark: $BENCHMARK_NAME"
+echo "Running benchmark: $BENCHMARK_NAME (from $BENCHMARK_TYPE)"
 echo "Number of players: $players"
 echo "Benchmark options: ${BENCHMARK_OPTS[*]}"
 echo "Results directory: $dir"
