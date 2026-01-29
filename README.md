@@ -72,13 +72,13 @@ Usage: `./../run.sh <benchmark_name> [benchmark_options...]`
 
 ```sh
 # From build directory, run BFS benchmark with 1000 vertices
-./../run.sh bfs --num-vert 1000 -n 2 -i 5
+./../run.sh bfs --num-vert 100000 --num-edge 100000 -n 2 -i 5
 
 # Run insertE benchmark with custom parameters
-./../run.sh insertE --num-vert 10000 --num-edges 50000 -n 3 -i 1
+./../run.sh insertE --num-vert 10000 --num-edge 1000 -n 2
 
 # Run grapharo_init benchmark
-./../run.sh grapharo_init --num-vert 100000 -n 2 -i 1
+./../run.sh grapharo_init --num-vert 10000 --num-edge 1000 -n 2
 ```
 
 ### graph_analysis.sh
